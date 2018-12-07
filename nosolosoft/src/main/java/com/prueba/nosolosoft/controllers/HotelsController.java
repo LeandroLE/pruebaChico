@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +30,7 @@ import io.swagger.annotations.ApiParam;
  *
  */
 @RestController
-@RequestMapping(value="/hotels")
+@RequestMapping(value="/prueba/hotels")
 @Api(tags = {"hotels"})
 public class HotelsController extends AbstractRestHandler {
 	
@@ -37,7 +39,29 @@ public class HotelsController extends AbstractRestHandler {
     @Autowired
     private HotelService hotelService;
     
+    /**
+     * Método para crear un hotel nuevo.
+     * @param hotel
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = {"application/json" }, produces = {"application/json" })
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Crea un hotel.", notes = "Devuelve la URL del hotel creado en Location header.")
+    public void createHotel(@RequestBody Hotel hotel,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	Hotel createdHotel = this.hotelService.createHotel(hotel);
+    	response.setHeader("Location", request.getRequestURL().append("/").append(createdHotel.getId()).toString());
+    }
     
+	/**
+	 * Método para la obtención (paginada) de la lista completa de hoteles.
+	 * @param page Página que nos devuelva
+	 * @param size Registros por página
+	 * @param request
+	 * @param response
+	 * @return Página con el listado de hoteles
+	 */
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Obtiene una lista con todos los hoteles.", 
@@ -52,6 +76,22 @@ public class HotelsController extends AbstractRestHandler {
 		return this.hotelService.getAllHotels(page, size);
 	}
 	
-	
-	
+    /**
+     * Método para obtener un hotel por ID.
+     * @param id
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = {"application/json" })
+    @ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Obtención de un hotel por id.", notes = "Hay que pasar un ID válido.")
+	@ResponseBody
+	public Hotel getHotel(@ApiParam(value = "ID del hotel.", required = true) @PathVariable("id") Integer id,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Hotel hotel = this.hotelService.getHotel(id);
+		checkResourceFound(hotel);
+        return hotel;
+    }
 }

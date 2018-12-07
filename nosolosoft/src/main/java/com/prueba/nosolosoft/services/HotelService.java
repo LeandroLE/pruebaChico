@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import com.prueba.nosolosoft.dao.jpa.HotelRepository;
 import com.prueba.nosolosoft.entities.Hotel;
 
+/**
+ * Servicio genérico para hoteles.
+ * @author leandro.latorre
+ *
+ */
 @Service
 public class HotelService {
 	
@@ -27,4 +32,11 @@ public class HotelService {
         return pageOfHotels;
     }
     
+    public Hotel createHotel(Hotel hotel) {
+        return hotelRepository.save(hotel);
+    }
+    
+    public Hotel getHotel(Integer id) {
+        return hotelRepository.findById(id).get();
+    }
 }
