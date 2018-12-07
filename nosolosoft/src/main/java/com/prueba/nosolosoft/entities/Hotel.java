@@ -1,15 +1,17 @@
-package com.prueba.nosolosoft.entidades;
+package com.prueba.nosolosoft.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
 @Data
-public class Bookings {
+@Table(name="Hotels")
+public class Hotel {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -17,13 +19,12 @@ public class Bookings {
 	private String name;
 	private Integer category;
 	
-	protected Bookings() {}
+	protected Hotel() {}
 
-	public Bookings(String name, Integer category) {
+	public Hotel(String name, Integer category) {
 		super();
 		this.name = name;
 		this.category = category;
 	}
-	
 	
 }
