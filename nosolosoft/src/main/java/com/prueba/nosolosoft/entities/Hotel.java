@@ -8,6 +8,11 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
+/**
+ * Datos de los hoteles.
+ * @author leandro.latorre
+ *
+ */
 @Entity
 @Data
 @Table(name="Hotels")

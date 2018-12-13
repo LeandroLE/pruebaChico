@@ -1,5 +1,7 @@
 package com.prueba.nosolosoft.services;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ import com.prueba.nosolosoft.entities.Hotel;
 @Service
 public class HotelService {
 	
-	private static final Logger log = LoggerFactory.getLogger(HotelService.class);
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private HotelRepository hotelRepository;
@@ -36,7 +38,11 @@ public class HotelService {
         return hotelRepository.save(hotel);
     }
     
-    public Hotel getHotel(Integer id) {
-        return hotelRepository.findById(id).get();
+    public Optional<Hotel> getHotel(Integer id) {
+        return hotelRepository.findById(id);
+    }
+    
+    public void deleteHotel(Integer id) {
+    	hotelRepository.deleteById(id);
     }
 }

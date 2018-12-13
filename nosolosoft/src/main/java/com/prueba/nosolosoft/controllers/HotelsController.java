@@ -1,5 +1,7 @@
 package com.prueba.nosolosoft.controllers;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,16 +27,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /**
- * Clase controladora general para Hoteles (única).
+ * Clase (única) controladora general para Hoteles .
  * @author leandro.latorre
  *
  */
 @RestController
-@RequestMapping(value="/prueba/hotels")
+@RequestMapping(value="/hotels")
 @Api(tags = {"hotels"})
 public class HotelsController extends AbstractRestHandler {
 	
-	private static final Logger log = LoggerFactory.getLogger(HotelService.class);
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
     @Autowired
     private HotelService hotelService;
@@ -90,8 +92,25 @@ public class HotelsController extends AbstractRestHandler {
 	@ResponseBody
 	public Hotel getHotel(@ApiParam(value = "ID del hotel.", required = true) @PathVariable("id") Integer id,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Hotel hotel = this.hotelService.getHotel(id);
+		Optional<Hotel> hotel = this.hotelService.getHotel(id);
 		checkResourceFound(hotel);
-        return hotel;
+        return hotel.get();
     }
+    
+	/**
+	 * Método para borrar un hotel por ID
+	 * @param id
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = { "application/json" })
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation(value = "Borramos un hotel.", notes = "Debes insertar un ID de hotel válido. Una vez borrado, un hotel no se puede recuperar.")
+	public void deleteHotel(
+			@ApiParam(value = "El ID del hotel.", required = true) @PathVariable("id") Integer id,
+			HttpServletRequest request, HttpServletResponse response) {
+		checkResourceFound(this.hotelService.getHotel(id));
+		this.hotelService.deleteHotel(id);
+	}
+    
 }
